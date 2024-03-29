@@ -193,12 +193,11 @@ print("MSE of white wine model on red wine data:", mse_white_on_red)
 from sklearn.ensemble import RandomForestRegressor
 import joblib
 
-# Example: Training a model
 model = RandomForestRegressor()
 model.fit(X_train, y_train)
 
-# Saving the model to a file
-model_path = 'random_forest_model.pkl'  # The file path and name where you want to save your model
+
+model_path = 'best_rf_model.pkl'  
 joblib.dump(model, model_path)
 
               
@@ -209,17 +208,17 @@ import streamlit as st
 import numpy as np
 import joblib
 
-# Load the pre-trained model (ensure this model file exists in your directory)
-model_path = 'random_forest_model.pkl'  # Adjust the path if your model is located elsewhere
+
+model_path = 'best_rf_model.pkl' 
 model = joblib.load(model_path)
 
 # Streamlit app title
 st.title('Wine Quality Prediction App')
 
 # Description or caption
-st.write('This app predicts the quality of wine based on various physicochemical properties.')
+st.write('Know the quality of wine you drink!!!')
 
-# User inputs through sliders
+
 fixed_acidity = st.slider('Fixed Acidity', min_value=4.0, max_value=16.0, value=8.0, step=0.1)
 volatile_acidity = st.slider('Volatile Acidity', min_value=0.0, max_value=2.0, value=0.5, step=0.01)
 citric_acid = st.slider('Citric Acid', min_value=0.0, max_value=1.0, value=0.25, step=0.01)
@@ -232,8 +231,8 @@ pH = st.slider('pH', min_value=2.8, max_value=4.0, value=3.3, step=0.01)
 sulphates = st.slider('Sulphates', min_value=0.3, max_value=2.0, value=0.5, step=0.01)
 alcohol = st.slider('Alcohol', min_value=8.0, max_value=14.0, value=10.5, step=0.1)
 
-# Arrange user inputs into feature array
-# Ensure the order of these features matches the order expected by your model
+
+#creating a feature array
 features = np.array([[fixed_acidity, volatile_acidity, citric_acid, residual_sugar,
                       chlorides, free_sulfur_dioxide, total_sulfur_dioxide, density,
                       pH, sulphates, alcohol]])
