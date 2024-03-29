@@ -190,34 +190,56 @@ mse_white_on_red = mean_squared_error(y_red, white_predictions_on_red)
 print("MSE of red wine model on white wine data:", mse_red_on_white)
 print("MSE of white wine model on red wine data:", mse_white_on_red)
 
+from sklearn.ensemble import RandomForestRegressor
+import joblib
+
+# Example: Training a model
+model = RandomForestRegressor()
+model.fit(X_train, y_train)
+
+# Saving the model to a file
+model_path = 'random_forest_model.pkl'  # The file path and name where you want to save your model
+joblib.dump(model, model_path)
 
               
 """# New Section"""
-
+import pickle
+# Import necessary libraries
+import streamlit as st
+import numpy as np
 import joblib
-import streamlit as smlt
-joblib.dump(best_rf_model, 'random_forest_model.pkl')
-loaded_model = joblib.load('random_forest_model.pkl')
 
+# Load the pre-trained model (ensure this model file exists in your directory)
+model_path = 'random_forest_model.pkl'  # Adjust the path if your model is located elsewhere
+model = joblib.load(model_path)
 
-smlt.title('Wine Quality Prediction App')
-smlt.caption('Know the quality of Wine you drink!!!')
-smlt.table(red)
-smlt.table(white)
+# Streamlit app title
+st.title('Wine Quality Prediction App')
 
-alcohol = smlt.slider('Alcohol percentage', min_value=8.0, max_value=100.0, value=0.5, step=0.5)
-acidity = smlt.slider('Acidity', min_value=0.0, max_value=1.0, value=0.5, step=0.01)
-citrus = smlt.slider('Citrus', min_value=0.0, max_value=1.0, value=0.5, step=0.01)
+# Description or caption
+st.write('This app predicts the quality of wine based on various physicochemical properties.')
 
-data = {
-    'alcohol': alcohol,
-    'acidity': acidity,
-    'citrus': citrus,
-    }
+# User inputs through sliders
+fixed_acidity = st.slider('Fixed Acidity', min_value=4.0, max_value=16.0, value=8.0, step=0.1)
+volatile_acidity = st.slider('Volatile Acidity', min_value=0.0, max_value=2.0, value=0.5, step=0.01)
+citric_acid = st.slider('Citric Acid', min_value=0.0, max_value=1.0, value=0.25, step=0.01)
+residual_sugar = st.slider('Residual Sugar', min_value=0.0, max_value=15.0, value=2.5, step=0.1)
+chlorides = st.slider('Chlorides', min_value=0.0, max_value=0.2, value=0.05, step=0.001)
+free_sulfur_dioxide = st.slider('Free Sulfur Dioxide', min_value=1, max_value=72, value=15)
+total_sulfur_dioxide = st.slider('Total Sulfur Dioxide', min_value=6, max_value=289, value=46)
+density = st.slider('Density', min_value=0.990, max_value=1.003, value=0.996, step=0.0001)
+pH = st.slider('pH', min_value=2.8, max_value=4.0, value=3.3, step=0.01)
+sulphates = st.slider('Sulphates', min_value=0.3, max_value=2.0, value=0.5, step=0.01)
+alcohol = st.slider('Alcohol', min_value=8.0, max_value=14.0, value=10.5, step=0.1)
 
+# Arrange user inputs into feature array
+# Ensure the order of these features matches the order expected by your model
+features = np.array([[fixed_acidity, volatile_acidity, citric_acid, residual_sugar,
+                      chlorides, free_sulfur_dioxide, total_sulfur_dioxide, density,
+                      pH, sulphates, alcohol]])
 
-if smlt.button('Predict Quality'):
-    # Put all feature inputs into a numpy array
-    features = np.array([[acidity, citrus, alcohol]]) 
-    quality = best_rf_model.predict(features)
-    smlt.write(f'The predicted quality is: {quality[0]}')
+# Predict button
+if st.button('Predict Quality'):
+    prediction = model.predict(features)
+    st.write(f'The predicted quality is: {prediction[0]}')
+
