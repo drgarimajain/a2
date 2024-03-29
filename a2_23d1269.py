@@ -15,6 +15,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import streamlit as st
+import os
+print("Current directory:", os.getcwd())
+print("Files in current directory:", os.listdir('.'))
 
 
 red = pd.read_csv('./wine+quality/winequality-red.csv', delimiter=';')
